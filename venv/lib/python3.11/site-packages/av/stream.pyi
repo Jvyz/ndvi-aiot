@@ -36,6 +36,7 @@ class Stream:
     profiles: list[str]
     profile: str | None
     index: int
+    options: dict[str, object]
     time_base: Fraction | None
     average_rate: Fraction | None
     base_rate: Fraction | None
@@ -46,3 +47,15 @@ class Stream:
     frames: int
     language: str | None
     type: Literal["video", "audio", "data", "subtitle", "attachment"]
+
+    # From context
+    codec_tag: str
+
+class DataStream(Stream):
+    type: Literal["data"]
+    name: str | None
+
+class AttachmentStream(Stream):
+    type: Literal["attachment"]
+    @property
+    def mimetype(self) -> str | None: ...

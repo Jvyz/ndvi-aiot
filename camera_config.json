@@ -18,5 +18,9 @@
   "ndvi_threshold_min": -1.0,
   "ndvi_threshold_max": 1.0,
   "evi_threshold_min": -1.0,
-  "evi_threshold_max": 1.0
+  "evi_threshold_max": 1.0,
+  "model_input_size": [
+    224,
+    224
+  ]
 }

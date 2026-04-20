@@ -1,0 +1,35 @@
+{
+  "timestamp": "20250731_115121",
+  "config": {
+    "gaussian_kernel_size": 5,
+    "gaussian_sigma": 1,
+    "ndvi_colormap": 2,
+    "evi_colormap": 15,
+    "alignment_method": "orb",
+    "auto_exposure": true,
+    "exposure_time": 10000,
+    "iso": 400,
+    "capture_resolution": [
+      1920,
+      1080
+    ],
+    "display_resolution": [
+      1280,
+      720
+    ],
+    "ndvi_threshold_min": -1.0,
+    "ndvi_threshold_max": 1.0,
+    "evi_threshold_min": -1.0,
+    "evi_threshold_max": 1.0,
+    "model_input_size": [
+      224,
+      224
+    ]
+  },
+  "quality_metrics": {
+    "mean_ndvi": -0.7009416226095688,
+    "std_ndvi": 0.04557065650455578,
+    "vegetation_pixels": 0,
+    "total_pixels": 2073600
+  }
+}
