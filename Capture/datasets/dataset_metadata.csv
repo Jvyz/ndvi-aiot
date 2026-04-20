@@ -1,0 +1,1 @@
+capture_id,timestamp,datetime,category,sample_number,rgb_filename,nir_filename,ncc_score,alignment_time_ms,image_width,image_height,notes

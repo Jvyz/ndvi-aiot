@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-11-04T21:59:31.664062",
+  "measurements": {
+    "ndvi_mean": -0.06398303806781769,
+    "ndvi_vegetation_mean": 0.6551088094711304,
+    "vegetation_percentage": 43.34495563271605,
+    "latitude": 0.0,
+    "longitude": 0.0,
+    "gps_accuracy": 999.0,
+    "gps_valid": false,
+    "alignment_quality": 0.12942670285701752,
+    "timestamp": 

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Spectral Imaging System</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1, h2 { color: #333; }
+        .video-feed-container, .processed-images-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .video-box, .image-box {
+            flex: 1 1 calc(50% - 20px);
+            min-width: 300px;
+            background: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .video-box img, .image-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .video-box h3, .image-box h3 {
+            margin: 10px 0;
+            color: #555;
+        }
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .controls button.capture-btn { background-color: #28a745; color: white; }
+        .controls button.capture-btn:hover { background-color: #218838; }
+        .controls button.inference-btn { background-color: #007bff; color: white; }
+        .controls button.inference-btn:hover { background-color: #0056b3; }
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none; /* Hidden by default */
+        }
+        .message.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .message.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .ai-result {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e2f0fb;
+            border-left: 5px solid #007bff;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Multi-Spectral Imaging System</h1>
+
+        <div class="controls">
+            <button class="capture-btn" onclick="captureAndProcess()">Capture & Process</button>
+            <button class="inference-btn" onclick="runAiInference()">Run AI Inference</button>
+        </div>
+
+        <div id="statusMessage" class="message"></div>
+        <div id="aiResult" class="ai-result"></div>
+
+        <h2>Live Camera Feeds</h2>
+        <div class="video-feed-container">
+            <div class="video-box">
+                <h3>RGB Camera</h3>
+                <img src="{{ url_for('video_feed_rgb') }}" alt="RGB Camera Feed">
+            </div>
+            <div class="video-box">
+                <h3>NIR Camera</h3>
+                <img src="{{ url_for('video_feed_nir') }}" alt="NIR Camera Feed">
+            </div>
+        </div>
+
+        <h2>Processed Images</h2>
+        <div class="processed-images-container" id="processedImagesContainer">
+            <div class="image-box">
+                <h3>Captured RGB</h3>
+                <img id="capturedRgb" src="" alt="Captured RGB Image">
+            </div>
+            <div class="image-box">
+                <h3>Captured NIR</h3>
+                <img id="capturedNir" src="" alt="Captured NIR Image">
+            </div>
+            <div class="image-box">
+                <h3>Aligned RGB</h3>
+                <img id="alignedRgb" src="" alt="Aligned RGB Image">
+            </div>
+            <div class="image-box">
+                <h3>Aligned NIR</h3>
+                <img id="alignedNir" src="" alt="Aligned NIR Image">
+            </div>
+            <div class="image-box">
+                <h3>NDVI Heatmap</h3>
+                <img id="ndviHeatmap" src="" alt="NDVI Heatmap">
+            </div>
+            <div class="image-box">
+                <h3>RDVI Heatmap</h3>
+                <img id="rdviHeatmap" src="" alt="RDVI Heatmap">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showMessage(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = message;
+            statusMessage.className = `message ${type}`;
+            statusMessage.style.display = 'block';
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000); // Hide after 5 seconds
+        }
+
+        function displayAiResult(result) {
+            const aiResultDiv = document.getElementById('aiResult');
+            aiResultDiv.textContent = `AI Inference Result: ${result}`;
+            aiResultDiv.style.display = 'block';
+        }
+
+        async function captureAndProcess() {
+            try {
+                const response = await fetch('/capture_and_process', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    showMessage(data.message, 'success');
+                    // Fetch and update processed images
+                    updateProcessedImages();
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error during capture and process:', error);
+                showMessage('An error occurred during capture and process.', 'error');
+            }
+        }
+
+        async function updateProcessedImages() {
+            try {
+                const response = await fetch('/display_processed_images');
+                const images_data = await response.json();
+
+                document.getElementById('capturedRgb').src = `data:image/jpeg;base64,${images_data.latest_rgb}`;
+                document.getElementById('capturedNir').src = `data:image/jpeg;base64,${images_data.latest_nir}`;
+                document.getElementById('alignedRgb').src = `data:image/jpeg;base64,${images_data.aligned_rgb}`;
+                document.getElementById('alignedNir').src = `data:image/jpeg;base64,${images_data.aligned_nir}`;
+                document.getElementById('ndviHeatmap').src = `data:image/jpeg;base64,${images_data.ndvi_heatmap}`;
+                document.getElementById('rdviHeatmap').src = `data:image/jpeg;base64,${images_data.rdvi_heatmap}`;
+            } catch (error) {
+                console.error('Error updating processed images:', error);
+            }
+        }
+
+        async function runAiInference() {
+            try {
+                const response = await fetch('/run_ai_inference', { method: 'POST' });
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    displayAiResult(data.result);
+                } else {
+                    showMessage(data.message, 'error');
+                    document.getElementById('aiResult').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error during AI inference:', error);
+                showMessage('An error occurred during AI inference.', 'error');
+                document.getElementById('aiResult').style.display = 'none';
+            }
+        }
+
+        // Initially update processed images on page load (if any were processed previously)
+        document.addEventListener('DOMContentLoaded', updateProcessedImages);
+    </script>
+</body>
+</html>

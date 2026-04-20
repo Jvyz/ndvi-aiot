@@ -1,0 +1,38 @@
+{
+  "cameras": {
+    "rgb_index": 0,
+    "ir_index": 1,
+    "resolution": [
+      1920,
+      1080
+    ],
+    "rgb_exposure_us": 6000,
+    "ir_exposure_us": 8000,
+    "rgb_gain": 2.0,
+    "ir_gain": 4.0,
+    "rgb_auto_exposure": false,
+    "ir_auto_exposure": false,
+    "rgb_auto_wb": true
+  },
+  "processing": {
+    "grid_step": 24,
+    "down_for_H": 0.5,
+    "normalize_ndvi": true,
+    "vegetation_threshold": 0.2
+  },
+  "datahub": {
+    "node_id": "2b3e7a1c-2970-4ecd-81bc-33de9b7eda3d",
+    "api_url": "https://api-dccs-ensaas.education.wise-paas.com/",
+    "credential_key": "ae13a5d125a904eaa5468733c53134yl"
+  },
+  "timing": {
+    "capture_interval_seconds": 5,
+    "upload_interval_seconds": 5
+  },
+  "output": {
+    "save_local": true,
+    "save_images": true,
+    "save_data": true,
+    "directory": "ndvi_gps_output"
+  }
+}
